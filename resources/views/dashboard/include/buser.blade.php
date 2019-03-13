@@ -1,0 +1,872 @@
+<style>
+#bu_event{
+	animation: blinker 2s linear infinite;
+}
+.progress{height:50px; margin:0}
+.remotePadding {
+	padding-bottom: 10px;
+}
+.remoteMargin {
+	margin-bottom: 5px;
+}
+/*@keyframes blinker {
+  50% { opacity: 0; }
+}*/
+</style>
+<div class="col-lg-12 all-background-opacity">
+    <div class="col-lg-5">
+        <ul class="nav nav-tabs headerText remotePadding" role="tablist">
+            <li class="col-lg-2 responsiveVersion-3"><p class="eventText" id="bu_event" style="color:#0F0">Live Agent</p></li>
+            <?php /*<li id="bu_video_click" role="presentation" class="active"><a href="#bu_video" role="tab" aria-controls="bu_video" data-toggle="tab">Video</a></li>*/ ?>
+
+						<li>
+							<input type="button" style="display:none; margin:2px;" id="agent_remoteon_button" class="btn btn-default btn-sm" value="Remote On">
+							<input type="button" style="display:none; margin:2px;" id="agent_logout_button" class="btn btn-default btn-sm" value="Logout">
+							<input type="button" style="display:none; margin:2px;" id="agent_trackcancel_button" class="btn btn-default btn-sm" value="Remote Cancel">
+							<input type="button" style="display:none; margin:2px;" id="agent_trackon_button" class="btn btn-default btn-sm" value="Remote Off">
+							<input type="button" style="display:none;margin:2px;" id="agent_trackon_button_video" class="btn btn-default btn-sm" value="Video Restart">
+							<input type="button" style="display:none;margin:2px;" id="agent_trackoff_button_video" class="btn btn-default btn-sm" value="Video Pause">
+							<input type="button" style="display:none;margin:2px;" id="agent_track_button_camera_front" class="btn btn-default btn-sm" value= "Front Camera">
+							<input type="button" style="display:none;margin:2px;" id="agent_track_button_camera_back" class="btn btn-default btn-sm" value="Back Camera">
+							<input type="button" style="display:none;margin:2px;" id="agent_track_button_flash_on" class="btn btn-default btn-sm" value= "Flash On">
+							<input type="button" style="display:none;margin:2px;" id="agent_track_button_flash_off" class="btn btn-default btn-sm" value="Flash Off">
+							<div id="loadingfeed" style="display:none;" style="color:#fff">Connecting to server...</div>
+                            <div id="agent_app_in_background" style="display:none;color:#fff; font-size: 11px;">You cannot remote control this device. Please instruct the user to keep the app open in the foreground.</div>
+						</li>
+
+            <div class="col-lg-2 select">
+                <select class="form-control" id="buser" name="buser"></select>
+            </div>
+        </ul>
+        <div style="clear: both;"></div>
+        <div class="col-lg-12 tab-content responsiveVersion-9">
+            <div role="tabpanel" class="tab-pane" id="bu_video">
+                <div class="col-lg-12 video-player border-right-10px">
+                   <?php /*<div onmousedown="displayPopupAgent()">*/ ?>
+                    <div id="agentPlayer"></div>
+										<div class="popupAgentLiveClickable" onclick="displayPopupAgent()">&nbsp;</div>
+                  <?php /*</div>*/ ?>
+                    <div id="flash" class="uk-container uk-container-center uk-margin-large-top" >
+                        <div class="uk-alert uk-alert-danger">
+                            <p><strong>You do not have Flash installed, or it is older than the required 10.0.0.</strong></p>
+                            <p><strong>Click below to install the latest version and then try again.</strong></p>
+                            <p><a target="_blank" href="https://www.adobe.com/go/getflashplayer">[ Download ]</a></p>
+                        </div>
+                    </div>
+                    <!-- <div class="col-lg-12" id="bUserVideoStreamer">
+                    	<p style="color:#FFF; text-align:center">Streaming...</p>
+                        <div class="progress progress-striped active">
+                          <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                            <span class="sr-only"></span>
+                          </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <p class="remoteMargin">Agent Map</p>
+        <div id="busermapDefault" class="top-btm-map">
+        	<div class="alert alert-danger" id="liveStream">Live streaming will be activated after Agent runs app</div>
+        </div>
+        <div id="busermap" class="top-btm-map"></div>
+    </div>
+    <div class="col-lg-2">
+        <p class="remoteMargin">Event Intelligence - Agent <span id="aZoomIn" class="btn btn-primary btn-xs">+</span></p>
+        <div class="tu-last-frequency" id="buserDataFrequency">
+       	&nbsp;&nbsp;Location:&nbsp;&nbsp;<span class="agent_location"></span><hr>
+        &nbsp;&nbsp;Event:&nbsp;&nbsp;<span class="agent_event"></span><hr>
+        &nbsp;&nbsp;TDS:&nbsp;&nbsp;<span class="agent_tds"></span><hr>
+        &nbsp;&nbsp;Speed:&nbsp;&nbsp;<span class="agent_speed"></span><hr>
+        &nbsp;&nbsp;Elevation:&nbsp;&nbsp;<span class="agent_elevation"></span><hr>
+        &nbsp;&nbsp;Direction:&nbsp;&nbsp;<span class="agent_direction"></span><hr>
+				&nbsp;&nbsp;Distance:&nbsp;&nbsp;<span class="agent_distance"></span><hr>
+				<?php /*&nbsp;&nbsp;Floor:&nbsp;&nbsp;<span class="agent_floor"></span><hr>*/ ?>
+        &nbsp;&nbsp;Battery Level:&nbsp;&nbsp;<span class="agent_battery_level"></span><hr>
+        &nbsp;&nbsp;Latitude:&nbsp;&nbsp;<span class="agent_lat"></span><hr>
+        &nbsp;&nbsp;Longitude:&nbsp;&nbsp;<span class="agent_lng"></span><hr>
+        </div>
+    </div>
+</div>
+
+<div id="frame"><div id="location_now"></div><img src="" alt="" id="mainImage" class="img-responsive" /></div>
+<div id="bUserEventInt">
+    <div class="col-lg-12" align="right">
+      <span class="btn btn-success btn-sm">Event Intelligence - Agent</span><span id="buEvClose" class="btn btn-danger btn-sm">X</span>
+    </div>
+    <div class="col-lg-12">
+      <div id="buEvContent">
+          	&nbsp;&nbsp;Location:&nbsp;&nbsp;<span class="agent_popup_location"></span><hr>
+            &nbsp;&nbsp;Event:&nbsp;&nbsp;<span class="agent_popup_event"></span><hr>
+            &nbsp;&nbsp;TDS:&nbsp;&nbsp;<span class="agent_popup_tds"></span><hr>
+            &nbsp;&nbsp;Speed:&nbsp;&nbsp;<span class="agent_popup_speed"></span><hr>
+            &nbsp;&nbsp;Elevation:&nbsp;&nbsp;<span class="agent_popup_elevation"></span><hr>
+            &nbsp;&nbsp;Direction:&nbsp;&nbsp;<span class="agent_popup_direction"></span><hr>
+						&nbsp;&nbsp;Distance:&nbsp;&nbsp;<span class="agent_popup_distance"></span><hr>
+						<?php /*&nbsp;&nbsp;Floor:&nbsp;&nbsp;<span class="agent_popup_floor"></span><hr>*/ ?>
+            &nbsp;&nbsp;Battery Level:&nbsp;&nbsp;<span class="agent_popup_battery_level"></span><hr>
+            &nbsp;&nbsp;Latitude:&nbsp;&nbsp;<span class="agent_popup_lat"></span><hr>
+            &nbsp;&nbsp;Longitude:&nbsp;&nbsp;<span class="agent_popup_lng"></span><hr>
+        </div>
+    </div>
+</div>
+
+<script>
+$("#flash").hide();
+$("#flashTransport").hide();
+$("#flashBtn").hide();
+if(!swfobject.hasFlashPlayerVersion("1")){
+	console.log("Flash display");
+  $(".popupLiveTransportClickable").hide();
+	$("#flash").show();
+	$("#flashTransport").show();
+	$("#flashBtn").show();
+}
+
+$("#busermap").hide();
+
+var agentAccessCodeActive = [];
+var agentAccessCode = "";
+var agentEventID = 0;
+var agentLastUpdatedDate = "";
+var agentNewUpdatedDate = "1";
+var jv_bUserMap;
+var agentMarker = [];
+var agentCounter = 0;
+var agentLatestEventBasedonLocation = 0;
+var agent_popup = false;
+
+/***********THIS CODE IS USED TO ADD AGENT TO THE DROPDOWN SELECT AND DISPLAY THE REMOTE ON BUTTON******************/
+var agentRemoteControlRef = firebase.database().ref('remote_control/{{Session::get('users_id')}}/agent')
+agentRemoteControlRef.on('value', function(snapshot) {
+
+	 if (snapshot.val() != null) {
+
+		 var activeAgent = [];
+		 snapshot.forEach(function(childSnapshot) {
+				 var snapDict = childSnapshot.val();
+
+				 if(snapDict != null) {
+
+					 		if(($.inArray(snapDict["accesscode"], agentAccessCodeActive ) == -1) || agentAccessCodeActive.length == 0 ) {
+
+									agentAccessCodeActive.push(snapDict["accesscode"]);
+								  $('#buser').append("<option data-event='"+snapDict["eventID"]+"' value='"+snapDict["accesscode"]+"'>"+snapDict["name"]+"</option>");
+									activeAgent.push(snapDict["accesscode"]);
+									if(agentAccessCodeActive.length == 1) {
+										 CheckAgentRemoteControl();
+										 int_map_load = true;
+										 intLiveMap();
+									}
+
+							} else {
+								activeAgent.push(snapDict["accesscode"]);
+
+							}
+				 }
+
+		 });
+
+		 if(activeAgent.length > 0) {
+			 		var isRemove = false;
+					 for(var i=0; i<=agentAccessCodeActive.length-1; i++) {
+
+		 					var result = jQuery.inArray( agentAccessCodeActive[i], activeAgent );
+							if(result == -1) {
+								 //remove the agent user to DROPDOWN
+								 $("#buser option[value='"+agentAccessCodeActive[i]+"']").remove();
+								 //remove the accesscode from the transportAccessCodeActive array
+								 var index = agentAccessCodeActive.indexOf(agentAccessCodeActive[i]);
+								 agentAccessCodeActive.splice(index, 1);
+								 isRemove = true;
+							}
+
+		 		 }
+
+				 //check if there is any user remove from the dropdown (active user)
+				 //if true then call checkagentremotecontrol function to refresh the content of the agent
+				 if(isRemove == true) {
+					   agentCounter=0;
+					   CheckAgentRemoteControl();
+						 isRemove = false;
+				 }
+		 }
+
+
+
+		 //console.log(agentAccessCodeActive);
+	 } else {
+		 //reset the remote control button
+		 agentAccessCodeActive = [];
+		 activeAgent = [];
+			$("#agent_remoteon_button").hide();
+			$("#agent_logout_button").hide();
+			HideAgentRemoteControl();
+			$("#buser").empty();
+
+	 }
+});
+
+
+//This function is used to check agent remote control button
+function CheckAgentRemoteControl() {
+			var currentAgent = $('#buser').val();
+			agentAccessCode = currentAgent;
+
+			var agentRemoteRef = firebase.database().ref('remote_control/{{Session::get('users_id')}}/agent/'+currentAgent);
+			agentRemoteRef.on('value', function(snapshot) {
+				 //console.log(snapshot.val())
+				 //if (snapshot.exists()) {
+					 if (snapshot.exists()) {
+						 //console.log(snapshot.val());
+						 var user_camera_trans = snapshot.val().user_remote_activate_camera;
+						 var user_video_trans = snapshot.val().user_remote_activate_video;
+						 var user_remote_activate_trans = snapshot.val().user_remote_activate;
+						 var user_remote_manual_start_trans = snapshot.val().user_remote_manual_start;
+                         var is_agent_app_in_background = snapshot.val().apib; //check if app in background if true hide the remote control button and display the notification else vice versa
+
+						 //if feeds already started check the value of remote control to display the proper button
+						 if(user_remote_activate_trans == false) {
+							 //display the remote off button and hide the remote on button
+							 $("#agent_remoteon_button").hide();
+							 $("#agent_logout_button").hide();
+							 if(agent_popup == false) {
+								 $("#agent_trackon_button").show();
+							 }
+
+							 $("#loadingfeed").hide();
+
+							 agentCounter = agentCounter + 1;
+							 console.log(agentCounter);
+							 if(agentCounter == 1) {
+									 //CheckAgentCurrentUser();
+									 setTimeout(function(){
+										 agentAccessCode = snapshot.val().accesscode;
+										 CheckAgentCurrentUser();
+										 //intLiveMap();
+									 },2000);
+							 }
+
+							 agentEventID = snapshot.val().eventID;
+							 console.log("Agent Remote Control: " + agentEventID);
+
+							 if(user_video_trans == true) {
+								 $("#agent_trackoff_button_video").show();
+								 $("#agent_trackon_button_video").hide();
+							 } else {
+								 $("#agent_trackon_button_video").show();
+								 $("#agent_trackoff_button_video").hide();
+							 }
+
+							 if (user_camera_trans == true && user_video_trans == true) {
+									 $("#agent_track_button_camera_front").show();
+									 $("#agent_track_button_camera_back").hide();
+							 } else if(user_camera_trans == false && user_video_trans == true) {
+									$("#agent_track_button_camera_back").show();
+									$("#agent_track_button_camera_front").hide();
+							 } else {
+								 $("#agent_track_button_camera_back").hide();
+								 $("#agent_track_button_camera_front").hide();
+							 }
+
+							 var user_flash_trans = snapshot.val().user_remote_activate_flash;
+							 if (user_flash_trans == true && user_video_trans == true && user_camera_trans == true) {
+									$("#agent_track_button_flash_off").show();
+									$("#agent_track_button_flash_on").hide();
+							 } else if (user_flash_trans == false && user_video_trans == true && user_camera_trans == true) {
+								 $("#agent_track_button_flash_on").show();
+								 $("#agent_track_button_flash_off").hide();
+							 } else {
+								 $("#agent_track_button_flash_on").hide();
+								 $("#agent_track_button_flash_off").hide();
+							 }
+
+
+						 } else {
+								//if feeds is not yet started display the remote on button
+								if($('#buser').val() == snapshot.val().accesscode) {
+
+									agentCounter = 0;
+									AgentHideFeedsAndMap();
+									HideAgentRemoteControl();
+									AgentDefaultMap();
+									$("#agent_remoteon_button").show();
+									$("#agent_logout_button").show();
+									//$("#loadingfeed").html('Connecting to server....');
+									$("#loadingfeed").hide();
+
+								}
+
+						 }
+
+					 } else {
+						 agentCounter = 0;
+						 HideAgentRemoteControl();
+						 AgentDefaultMap();
+						 $("#agent_remoteon_button").show();
+						 $("#agent_logout_button").show();
+						$("#loadingfeed").hide();
+					 }
+
+                              //check if app is in background
+                              console.log("CheckAgentRemoteControl");
+                              console.log(is_agent_app_in_background);
+
+                              if (is_agent_app_in_background == true) {
+                                      HideAgentRemoteControl();
+                                      $("#agent_app_in_background").show();
+                                      $("#agent_remoteon_button").hide();
+                                      $("#agent_logout_button").hide();
+
+                              } else {
+                                    $("#agent_app_in_background").hide();
+
+                              }
+
+				// }
+			 });
+}
+
+//This function is used to hide agent remote control
+function HideAgentRemoteControl() {
+	$("#agent_trackoff_button_video").hide();
+	$("#agent_trackon_button_video").hide();
+	$("#agent_trackon_button").hide();
+	$("#agent_track_button_camera_back").hide();
+	$("#agent_track_button_camera_front").hide();
+	$("#agent_track_button_flash_on").hide();
+	$("#agent_track_button_flash_off").hide();
+}
+
+//This function is to check the status of current user (currently selected in dropdown)
+function CheckAgentCurrentUser() {
+		var currentAgent = $('#buser').val();
+    agentAccessCode = currentAgent;
+
+		var currentUserRef = firebase.database().ref('users/{{Session::get('users_id')}}/agent/');
+		currentUserRef.orderByChild('accesscode').equalTo(currentAgent).once('child_added', function(snapshot) {
+			  //console.log(snapshot.val());
+
+				$("#agentPopupVideo").html("");
+				$("#loadingfeed").hide();
+
+				if (snapshot.val() == null) {
+					 AgentHideFeedsAndMap();
+					 HideAgentRemoteControl();
+
+				} else {
+
+					 $("#busermapDefault").hide();
+					 $("#liveStream").hide();
+					 $("#busermap").show();
+					 $("#agentPlayer").show();
+					 $("#bu_video").show();
+
+					 var snapDict = snapshot.val();
+					 //console.log(snapDict)
+					 agentEventID = snapDict["eventID"];
+					 AgentDefaultMap();
+					 CallAgentMapStreaming(currentAgent);
+					 MultiplePopupAgent(currentAgent,snapDict["name"]);
+					 agentAccessCode = currentAgent;
+					 console.log("agentAccessCode: " + agentAccessCode);
+					 intLiveMap();
+
+
+				}
+		});
+}
+
+//This function is used for multiple popup agent
+function MultiplePopupAgent(accesscode,agentName) {
+	$("#agentPopupVideo").append("<div id='aframe-video' class='aframe-video"+accesscode+"' style='width:400px !important; height: 400px !important;'><div class='col-lg-12 header' align='right'><span class='btn btn-success btn-sm'>Live Streaming - Agent ("+agentName+") </span><span id='avideoClose' class='btn btn-danger btn-sm' onClick='agentClose("+accesscode+")'>X</span></div><div class='col-lg-12' style='width:100% !important; height: 83% !important;'><div id='agentPlayerPopup"+accesscode+"' class='agentPlayerPopup"+accesscode+" style='z-index: 99999; height: 100%; width: 82%;'></div></div><div class='col-lg-12 header' align='right'><span id='avideoClose' class='btn btn-danger btn-sm' onClick='agentClose("+accesscode+")'>X</span></div></div>");
+
+  $( ".aframe-video"+accesscode).draggable({ handle:'.header'}).resizable();
+}
+
+//This function is used to display the current location of agent and map streaming
+function CallAgentMapStreaming(accesscode) {
+	 $('#agentPlayer').show();
+	 GetLocationAgent(accesscode);
+	 console.log("Agent Map : " + agentEventID);
+	 StreamingLive("rtmp://{{STREAMINGIPADDRESS}}/live/"+accesscode+"-"+agentEventID)+"?accesscode={{Session::get('securityCode')}}&token={{Session::get('securityToken')}}";
+}
+
+
+
+
+function StreamingLive(src) {
+	var flashvars={autoPlay:'true',src:escape(src),streamType:'live',scaleMode:'letterbox',playerOpts:'no'};
+  var params={allowFullScreen:'true',allowScriptAccess:'always',wmode:'opaque'};
+  var attributes={id:'agentPlayer'};
+  swfobject.embedSWF('https://raptorsecuritysoftware.com/public/assets/player.swf','agentPlayer','100%','300','10.2',null,flashvars,params,attributes);
+}
+
+function GetLocationAgent(accesscode) {
+	var agentCurrentLocationRef = firebase.database().ref('user_location/'+accesscode);
+	 agentCurrentLocationRef.on('value', function(snapshot) {
+
+			var snapDict = snapshot.val();
+
+			if(snapDict == null) {
+					//AgentHideFeedsAndMap();
+
+			} else {
+
+				var lat = parseFloat(snapDict["lat"]);
+				var lon = parseFloat(snapDict["lon"]);
+
+				$("#agent_location").html()
+
+				var currentAgent = $("#buser").val();
+				var locationAccessCode = snapDict["user_access_code"];
+				agentAccessCode = snapDict["user_access_code"];
+				//if(agentEventID != ""  && agentEventID > snapDict["event_id"]) {
+					agentEventID = snapDict["event_id"];
+				//}
+
+				//agentLatestEventBasedonLocation
+				/*
+				if(agentLatestEventBasedonLocation != agentEventID) {
+						agentLatestEventBasedonLocation = agentEventID;
+						StreamingLive("rtmp://{{STREAMINGIPADDRESS}}/live/"+accesscode+"-"+agentEventID)+"?accesscode={{Session::get('securityCode')}}&token={{Session::get('securityToken')}}";
+				}
+				*/
+
+				console.log("Location: " + agentEventID);
+
+				if(currentAgent == locationAccessCode) {
+					agentLastUpdatedDate = snapDict["lastUpdatedDate"];
+					AgentFeeds(snapDict);
+					InitMapAgent(lat,lon);
+				}
+
+
+
+			}
+
+		});
+}
+
+//Initial display of map
+function InitMapAgent(lat, lon) {
+
+	 var coordinate = {lat: lat, lng: lon};
+
+	ClearAgentMarker();
+
+	var marker = new google.maps.Marker({
+		position: coordinate,
+		map: jv_bUserMap,
+		icon: '{{url('public/assets/images/agent-o.png')}}'
+	});
+
+	agentMarker.push(marker);
+
+	jv_bUserMap.setCenter(new google.maps.LatLng(lat,lon));
+}
+
+
+//Clear markers on map
+function  ClearAgentMarker() {
+	for(i=0; i<agentMarker.length; i++){
+        agentMarker[i].setMap(null);
+    }
+}
+
+
+//Display agent current location on event intelligence
+function AgentFeeds(data) {
+	$(".agent_location").html(data["location_now"]);
+	$(".agent_event").html(data["event_id"]);
+	$(".agent_tds").html(data["tds"]);
+	$(".agent_speed").html(data["speed"] + " mph");
+	$(".agent_direction").html(data["direction"]);
+	$(".agent_battery_level").html(data["battery_level"]);
+	$(".agent_lat").html(data["lat"]);
+	$(".agent_lng").html(data["lon"]);
+	if(transportMarkers.length == 0) {
+		$(".agent_distance").html("No Transport Available");
+	} else {
+			$(".agent_distance").html(data["distance"]+ " " + data["distanceType"]);
+	}
+	//$(".agent_floor").html(data["floor"]);
+	if(data["elevation"] === undefined) {
+		$(".agent_elevation").html("0.0 ft");
+	} else {
+		$(".agent_elevation").html(data["elevation"]+" ft");
+	}
+
+
+
+	$(".agent_popup_location").html(data["location_now"]);
+	$(".agent_popup_event").html(data["event_id"]);
+	$(".agent_popup_tds").html(data["tds"]);
+	$(".agent_popup_speed").html(data["speed"] + " mph");
+	$(".agent_popup_direction").html(data["direction"]);
+	$(".agent_popup_battery_level").html(data["battery_level"]);
+	$(".agent_popup_lat").html(data["lat"]);
+	$(".agent_popup_lng").html(data["lon"]);
+	if(transportMarkers.length == 0) {
+		$(".agent_popup_distance").html("No Transport Available");
+	} else {
+		$(".agent_popup_distance").html(data["distance"]+ " " + data["distanceType"]);
+	}
+	//$(".agent_popup_distance").html(data["distance"] + " " + data["distanceType"]);
+	//$(".agent_popup_floor").html(data["floor"]);
+
+	if(data["elevation"] === undefined) {
+		$(".agent_popup_elevation").html("0.0 ft");
+	} else {
+		$(".agent_popup_elevation").html(data["elevation"]+" ft");
+	}
+}
+
+//This function is used to hide agent feeds and map
+function AgentHideFeedsAndMap() {
+	$("#busermapDefault").hide();
+	$("#liveStream").hide();
+	$("#busermap").show();
+	$("#agentPlayer").hide();
+	//$('#transportPlayer').css('display', 'none');
+	AgentDefaultMap();
+	ClearAgentFeeds();
+	agentAccessCode = "";
+	//agentCounter=0;
+	//int_map_load = true;
+	intLiveMap();
+}
+
+
+//change user via dropdown
+$('#buser').change(function() {
+	agentAccessCode = $("#buser").val();
+	  agentCounter = 0;
+	  AgentHideFeedsAndMap();
+	  HideAgentRemoteControl();
+		CheckAgentRemoteControl();
+		AgentHideFeedsAndMap();
+		CheckAgentCurrentUser();
+		int_map_load = false;
+		intLiveMap();
+
+});
+
+
+//agent default map display
+function AgentDefaultMap() {
+			$("#busermapDefault").hide();
+			$("#busermap").show();
+
+			var myCenter = new google.maps.LatLng(38.907192, -77.036871);
+			var mapOptions = {
+						center:myCenter,
+						mapTypeId: 'hybrid',
+						zoom:18
+			};
+
+			jv_bUserMap = new google.maps.Map(document.getElementById("busermap"), mapOptions);
+			jv_bUserMap.setTilt(45);
+}
+
+//Clear agent feeds in event intelligence
+function ClearAgentFeeds() {
+			$(".agent_location").html("");
+			$(".agent_event").html("");
+			$(".agent_tds").html("");
+			$(".agent_speed").html("");
+			$(".agent_direction").html("");
+			$(".agent_battery_level").html("");
+			$(".agent_lat").html("");
+			$(".agent_lng").html("");
+			$(".agent_elevation").html("");
+			$(".agent_distance").html("");
+			//$(".agent_floor").html("");
+
+			$(".agent_popup_location").html("");
+			$(".agent_popup_event").html("");
+			$(".agent_popup_tds").html("");
+			$(".agent_popup_speed").html("");
+			$(".agent_popup_direction").html("");
+			$(".agent_popup_battery_level").html("");
+			$(".agent_popup_lat").html("");
+
+			$(".agent_popup_lng").html("");
+			$(".agent_popup_elevation").html("");
+			$(".agent_popup_distance").html("");
+}
+
+
+$(document).on("click","#aZoomIn",function(e){
+	//console.log('agent event int click');
+	$("#bUserEventInt").fadeIn();
+	//$("#text-overlay").fadeIn();
+	$( "#bUserEventInt" ).draggable();
+	$("#buEvClose").click(function(){
+		$("#mainImage").show();
+		$("#bUserEventInt").fadeOut();
+		//$("#text-overlay").fadeOut();
+	});
+	e.preventDefault();
+});
+
+
+//display popup agent
+function displayPopupAgent() {
+
+	//alert("To remote off user, close the pop up.");
+	$("#agent_trackon_button").hide();
+	agent_popup = true;
+	var accesscode = $("#buser").val();
+	streamingLiveAgentPopup("rtmp://{{STREAMINGIPADDRESS}}/live/"+accesscode+"-"+agentEventID+"?accesscode={{Session::get('securityCode')}}&token={{Session::get('securityToken')}}", accesscode);
+
+	 $(".aframe-video"+accesscode).fadeIn();
+
+	 $('#agentPlayer').show();
+
+}
+
+//display multiple popup agent
+function multiplePopupAgent(accesscode,agentName) {
+
+  $("#agentPopupVideo").append("<div id='aframe-video' class='aframe-video"+accesscode+"' style='width:400px !important; height: 400px !important;'><div class='col-lg-12 header' align='right'><span class='btn btn-success btn-sm'>Live Streaming - Agent ("+agentName+") </span><span id='avideoClose' class='btn btn-danger btn-sm' onClick='agentClose("+accesscode+")'>X</span></div><div class='col-lg-12' style='width:100% !important; height: 83% !important;'><div id='agentPlayerPopup"+accesscode+"' class='agentPlayerPopup"+accesscode+" style='z-index: 99999; height: 100%; width: 82%;'></div></div><div class='col-lg-12 header' align='right'><span id='avideoClose' class='btn btn-danger btn-sm' onClick='agentClose("+accesscode+")'>X</span></div></div>");
+
+  $( ".aframe-video"+accesscode).draggable({ handle:'.header'}).resizable();
+
+}
+
+function streamingLiveAgentPopup(src,accesscode) {
+	var flashvars={autoPlay:'true',src:escape(src),streamType:'live',scaleMode:'letterbox',};
+	var params={allowFullScreen:'true',allowScriptAccess:'always',wmode:'opaque'};
+	var attributes={id:'agentPlayerPopup'+accesscode};
+	swfobject.embedSWF('https://raptorsecuritysoftware.com/public/assets/player.swf','agentPlayerPopup'+accesscode,'100%','100%','10.2',null,flashvars,params,attributes);
+}
+
+function agentClose(accesscode) {
+
+	$(".aframe-video"+accesscode).fadeOut();
+	 $("#agentPlayer").show();
+	 	$("#agent_trackon_button").show();
+		agent_popup = false;
+
+}
+
+/*
+setInterval(function(){ checkAgentStatus(); }, 300000);
+function checkAgentStatus() {
+		if(agentNewUpdatedDate == "") {
+				agentNewUpdatedDate = agentLastUpdatedDate;
+		} else {
+			//console.log(agentNewUpdatedDate + " " + agentLastUpdatedDate);
+				if(agentNewUpdatedDate == agentLastUpdatedDate) {
+						//console.log("502 Agent Not Active");
+						//call the stop api
+						stopAgent();
+				} else {
+						agentNewUpdatedDate = agentLastUpdatedDate;
+						//console.log("502 Agent Active");
+				}
+		}
+}
+
+
+function stopAgent() {
+	    var accesscode = $("#buser").val();
+		var activeAgentAccesscode  = accesscode;
+
+		$.ajax({
+							cache: false,
+							type:'POST',
+							url:'{{url('api/v1/stop/streaming_web')}}',
+							headers: { "Authorization": "{{Session::get('securityToken')}}", "Content-Type": "application/x-www-form-urlencoded" },
+							data:"accesscode="+activeAgentAccesscode,
+							success:function(response) {
+									agentNewUpdatedDate = "";
+									agentLastUpdatedDate = "";
+							}
+		});
+
+}
+ */
+
+var user_agent_activity_date = "";
+
+function CheckUserAgentActivity() {
+    var currentAgent = $('#buser').val();
+    console.log("CheckUserAgentActivity");
+    var check_user_agent_activity = firebase.database().ref('cua/{{Session::get('users_id')}}/agent/'+currentAgent);
+    check_user_agent_activity.once('value', function(snapshot) {
+                                   if (snapshot.exists()) {
+                                   if(snapshot.val().dt == user_agent_activity_date) {
+                                   StopAgentActivity();
+                                   check_user_agent_activity.remove();
+                                   } else {
+                                   user_agent_activity_date = snapshot.val().dt;
+                                   console.log(user_agent_activity_date);
+                                   }
+
+                                   }
+
+
+                                   });
+}
+
+
+function StopAgentActivity() {
+    var accesscode = $("#buser").val();
+    var activeAgentAccesscode  = accesscode;
+    console.log("StopAgentActivity");
+    console.log(activeAgentAccesscode);
+    $.ajax({
+           cache: false,
+           type:'POST',
+           url:'{{url('api/v1/stop/streaming_web')}}',
+           headers: { "Authorization": "{{Session::get('securityToken')}}", "Content-Type": "application/x-www-form-urlencoded" },
+           data:"accesscode="+activeAgentAccesscode,
+           success:function(response) {
+           user_agent_activity_date = "";
+           AgentHideFeedsAndMap();
+           HideAgentRemoteControl();
+           }
+           });
+
+}
+
+//remote control  button functionality
+$( "#agent_trackoff_button_video" ).click(function() {
+		//console.log("Access Code: " +  agentAccessCodeNew);
+		$("#agent_trackoff_button_video").hide();
+		$("#agent_trackon_button_video").show();
+		$("#agent_track_button_camera_back").hide();
+		$("#agent_track_button_camera_front").hide();
+		$("#agent_track_button_flash_on").hide();
+		$("#agent_track_button_flash_off").hide();
+		UpdateAgentRemoteControlVideo(false);
+
+});
+
+$( "#agent_trackon_button_video" ).click(function() {
+		//console.log("Access Code: " +  agentAccessCodeNew);
+		$("#agent_trackoff_button_video").show();
+		$("#agent_trackon_button_video").hide();
+		$("#agent_track_button_camera_front").show();
+		$("#agent_track_button_flash_on").show();
+		UpdateAgentRemoteControlVideo(true);
+
+});
+
+function UpdateAgentRemoteControlVideo(status) {
+	 var agentAccessCodeNew = $("#buser").val();
+	 var userAgentRef = firebase.database().ref('remote_control/{{Session::get('users_id')}}/agent/'+agentAccessCodeNew);
+	 userAgentRef.update({user_remote_activate_video: status});
+}
+
+
+$("#agent_track_button_camera_back").click(function() {
+		$("#agent_track_button_camera_back").hide();
+		$("#agent_track_button_camera_front").show();
+		$("#agent_track_button_flash_on").show();
+		$("#agent_track_button_flash_off").hide();
+		UpdateAgentRemoteControlCamera(true);
+});
+
+
+$("#agent_track_button_camera_front").click(function() {
+		$("#agent_track_button_camera_back").show();
+		$("#agent_track_button_camera_front").hide();
+		$("#agent_track_button_flash_off").hide();
+		$("#agent_track_button_flash_on").hide();
+		UpdateAgentRemoteControlCamera(false);
+});
+
+
+function UpdateAgentRemoteControlCamera(status) {
+	var agentAccessCodeNew = $("#buser").val();
+	var userAgentRef = firebase.database().ref('remote_control/{{Session::get('users_id')}}/agent/'+agentAccessCodeNew+"/");
+	 userAgentRef.update({user_remote_activate_camera: status});
+}
+
+$("#agent_track_button_flash_on").click(function() {
+	$("#agent_track_button_flash_off").show();
+	$("#agent_track_button_flash_on").hide();
+	UpdateAgentRemoteControlFlash(true);
+});
+
+$("#agent_track_button_flash_off").click(function() {
+	$("#agent_track_button_flash_off").hide();
+  $("#agent_track_button_flash_on").show();
+  UpdateAgentRemoteControlFlash(false);
+});
+
+function UpdateAgentRemoteControlFlash(status) {
+	 var agentAccessCodeNew = $("#buser").val();
+	 var userAgentRef = firebase.database().ref('remote_control/{{Session::get('users_id')}}/agent/'+agentAccessCodeNew);
+	 userAgentRef.update({user_remote_activate_flash: status});
+
+}
+
+
+$("#agent_trackon_button").click(function () {
+	 var agentAccessCodeNew = $("#buser").val();
+	 var userAgentRef = firebase.database().ref('remote_control/{{Session::get('users_id')}}/agent/'+agentAccessCodeNew);
+	 userAgentRef.update({user_remote_system_off: true});
+	 $("#loadingfeed").html("Disconnecting from server...");
+	 $("#loadingfeed").show();
+	 agentCounter = 0;
+	 HideAgentRemoteControl();
+
+});
+
+
+$("#agent_remoteon_button").click(function () {
+
+	var agentAccessCodeNew = $("#buser").val();
+
+	 var userAgentRef = firebase.database().ref('remote_control/{{Session::get('users_id')}}/agent/'+agentAccessCodeNew);
+	 userAgentRef.update({user_remote_activate: false});
+
+	 $("#loadingfeed").html("Connecting to server...");
+	 $("#loadingfeed").show();
+	 $("#agent_remoteon_button").hide();
+	 $("#agent_logout_button").hide();
+	 HideAgentRemoteControl();
+
+	 setTimeout(function(){
+		 CheckAgentRemoteControl();
+		 CheckAgentCurrentUser();
+	 },7000);
+
+	//  setTimeout(function() {
+	// 		checkActiveAgent();
+	//  }, 20000);
+});
+
+
+function checkActiveAgent() {
+	var agentAccessCodeNew = $("#buser").val();
+	var activeAgentRef =  firebase.database().ref('users/{{Session::get('users_id')}}/agent');
+ activeAgentRef.once('value', function(snapshot) {
+		 if (snapshot.val() == null) {
+
+					$("#loadingfeed").hide();
+
+					var userAgentRef = firebase.database().ref('remote_control/{{Session::get('users_id')}}/agent/'+agentAccessCodeNew);
+					userAgentRef.remove();
+
+		 }
+ });
+}
+
+
+$("#agent_logout_button").click(function() {
+	   var agentAccessCodeNew = $("#buser").val();
+
+		 var userAgentRef = firebase.database().ref('remote_control/{{Session::get('users_id')}}/agent/'+agentAccessCodeNew);
+		 userAgentRef.remove();
+
+});
+
+</script>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm7lLXY9LEhmOEyTzzIeLbq6LA_teCGBE"></script>

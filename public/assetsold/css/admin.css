@@ -1,0 +1,13 @@
+.dropdown-menu li a{background-color:#FFF}
+a.desktop_logo{display: none}
+@media (min-width:320px) and (max-width:480px){
+	li.mobile_logo{display:none}
+}
+@media (min-width:737px) and (max-width:1024px){
+	.nav>li>a{padding:10px 5px}
+	li.mobile_logo{display:none}
+	a.desktop_logo{display:block}
+	ul.nav{margin-left:10px;}
+	/*.navbar-nav>li>a{padding-bottom:0px}*/
+} 
+

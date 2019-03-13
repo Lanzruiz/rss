@@ -1,0 +1,153 @@
+  /* iPhone 6 landscape */
+@media only screen and (min-device-width: 375px)
+  and (max-device-width: 667px)
+  and (orientation: landscape)
+  and (-webkit-min-device-pixel-ratio: 2)
+  {
+
+  }
+
+/* iPhone 6 portrait */
+@media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 667px)
+  and (orientation: portrait)
+  and (-webkit-min-device-pixel-ratio: 2)
+  {
+/*	li.resTeamNameDesktop{display: none}
+	li.desktop_logo{display:none}
+	a.mobile_logo{display: inline; padding:5px 0 0 25px}
+	a.mobile_logo img{width:200px;}
+	div#resTeamNameMobile{display: block; background-color:#000;font-size:25px; color:#09C; text-align: center; font-weight:bold;} 
+	div#DeviceResponsive{padding:0; margin:0}
+	ul.top_menu_link{padding-left:15px;}
+*/  }
+
+
+/* iPhone 6 Plus landscape */
+@media only screen
+  and (min-device-width: 414px)
+  and (max-device-width: 736px)
+  and (orientation: landscape)
+  and (-webkit-min-device-pixel-ratio: 3)
+  {
+
+  }
+/* iPhone 6 Plus portrait */
+@media only screen 
+  and (min-device-width: 414px) 
+  and (max-device-width: 736px) 
+  and (orientation: portrait) 
+  and (-webkit-min-device-pixel-ratio: 3)
+  {
+	/*.tu-event{height:125px; overflow-y: scroll;}
+	.responsiveVersion-3{width:35%; float:left}
+	.responsiveVersion-9{width:65%; float:right}
+	.tu-event li{display:none; font-size:12px; cursor:pointer; border-bottom:1px solid #CCC; padding:3px 2px 3px 12px}
+	#tu_photo li, #bu_photo li{display:none; width:50%; float:left; list-style:none; border-bottom:none;}
+	.audio-player{height:157px;}
+	.video-player{height:157px;}
+	.video-player video{height:156px;}
+	.nav-tabs-cctvSection{border-right:10px solid #999}
+	.video-player-cc{height:163px;}
+	.video-player-cc video{height:163px;}
+	.loadMoreButton{border-bottom:1px solid}
+	.cctv_section_feed{height:163px; border-bottom:32px solid #FFF;}
+	li.resTeamNameDesktop{display: none}
+	li.desktop_logo{display:none}
+	a.mobile_logo{display: inline; padding:5px 0 0 25px}
+	a.mobile_logo img{width:200px;}
+	div#resTeamNameMobile{display: block; background-color:#000;font-size:36px; color:#09C; text-align: center; font-weight:bold;} 
+	div#DeviceResponsive{padding:0; margin:0}
+	ul.top_menu_link{padding-left:25px;}*/
+  }
+/* iPhone 6 and 6 Plus */
+@media only screen
+  and (max-device-width: 640px),
+  only screen and (max-device-width: 667px),
+  only screen and (max-width: 480px)
+  {
+
+  }
+@media (min-width:414px) and (max-width:736px){
+	.tu-event{height:125px; overflow-y: scroll}
+	.responsiveVersion-3{width:35%; float:left}
+	.responsiveVersion-9{width:65%; float:right}
+	.tu-event li{/*display:none;*/ font-size:12px; cursor:pointer; border-bottom:1px solid #CCC; padding:3px 2px 3px 12px}
+	#tu_photo li, #bu_photo li{/*display:none;*/ width:50%; float:left; list-style:none; border-bottom:none;}
+	.audio-player{height:157px;}
+	.video-player{height:157px;}
+	.video-player video{height:156px;}
+	.nav-tabs-cctvSection{border-right:10px solid #999}
+	.video-player-cc{height:163px;}
+	.video-player-cc video{height:163px;}
+	.loadMoreButton{border-bottom:1px solid}
+	.cctv_section_feed{height:163px; border-bottom:32px solid #FFF;}
+	li.resTeamNameDesktop{display: none}
+	li.desktop_logo{display:none}
+	a.mobile_logo{display: inline; padding:5px 0 0 25px}
+	a.mobile_logo img{width:200px;}
+	div#resTeamNameMobile{display: block; background-color:#000;font-size:36px; color:#09C; text-align: center; font-weight:bold} 
+	div#DeviceResponsive{padding:0; margin:0}
+	ul.top_menu_link{padding-left:25px;}
+	p.eventText{padding: 5px 12px}
+	.select{width:100%}
+	#frame{display:none; background-color:#FFF; width:100%; position:fixed; z-index:9999; padding:12px 0; height:94%; margin-bottom:3%; margin-top:3%; cursor:pointer;}
+	#mainImage{width:94%; height:90%; margin-left:auto; margin-right:auto;}
+	#location_now{width:94%; height:10%; padding:5px; background-color:#000; margin-left:auto; margin-right:auto; font-size:12px}
+}
+@media (min-width:320px) and (max-width:413px){
+	.tu-event{height:87px; overflow-y: scroll}
+	#map_integ_threat{height:150px;}
+	.audio-player{padding:0 10px;height:119px; border-bottom:1px solid #999; border-right:none}
+	.video-player{height:119px; border-right:none}
+	.video-player video{height:119px;}
+	.video-player-cc{height:120px; border-right:none}
+	.video-player-cc video{height:120px;}
+	.top-btm-map{height:150px;}
+	.cctv_section_feed{height:120px; border-bottom:32px solid #FFF;}
+	.tu-last-frequency{overflow-y:hidden}
+	li.resTeamNameDesktop{display: none}
+	li.desktop_logo{display:none}
+	a.mobile_logo{display: inline; padding:9px 10px 9px 25px}
+	a.mobile_logo img{width:150px;}
+	div#resTeamNameMobile{display: block; background-color:#000;font-size:25px; color:#09C; text-align: center; font-weight:bold;} 
+	div#DeviceResponsive{padding:0; margin:0}
+	ul.top_menu_link{padding-left:25px;}
+	.navbar-toggle{margin-right:30px;}
+	p.eventText{padding: 5px 12px}
+	ul.headerText li, .btn-default, .console .select select{font-size:12px;}
+	.console .select select{padding: 3px 0;}
+	.responsiveVersion-3{width:40%; float:left}
+	.responsiveVersion-9{width:60%; float:right}
+	#tu_photo li, #bu_photo li{/*display:none;*/ width:100%; float:left; list-style:none; border-bottom:none;}
+	.top_menu_link>li>a{padding: 5px 0px;}
+	.loadMoreButton{border-bottom:1px solid}
+	.select{width:100%}
+	#frame{display:none; background-color:#FFF; width:100%; position:fixed; z-index:9999; padding:12px 0; height:94%; margin-bottom:3%; margin-top:3%; cursor:pointer;}
+	#mainImage{width:94%; height:90%; margin-left:auto; margin-right:auto;}
+	#location_now{width:94%; height:10%; padding:5px; background-color:#000; margin-left:auto; margin-right:auto; font-size:12px}
+}
+@media (min-width:768px) and (max-width:1024px){
+	.responsiveVersion-3{width:20%; float:left}
+	.responsiveVersion-9{width:80%; float:right}
+	div#resTeamNameMobile{display: block; background-color:#000;font-size:25px; color:#09C; text-align: center; font-weight:bold;} 
+	li.resTeamNameDesktop{display: none}
+	div#DeviceResponsive{padding:0; margin:0}
+	.navbar-brand{height:0}
+	li.desktop_logo img{width:150px;}
+	.top_menu_link>li>a{ padding:12px 5px 5px 5px}
+	.fa-2x{font-size:1em}
+	.navbar-nav{margin-left:15px;}
+	.loadMoreButton{border-bottom:1px solid}
+	.audio-player{height:207px;border-bottom:1px solid #999; border-right:none}
+	.video-player{height:207px;border-right:none}
+	.video-player video{height:207px;}
+	.video-player-cc{border-right:none}
+	#frame{display:none; background-color:#FFF; width:50%; position:fixed; z-index:9999; padding:12px 0; height:94%; margin-bottom:3%; margin-top:3%; cursor:pointer;}
+	#mainImage{width:94%; height:90%; margin-left:auto; margin-right:auto;}
+	#location_now{width:94%; height:10%; padding:5px; background-color:#000; margin-left:auto; margin-right:auto; font-size:12px}
+}
+@media (min-width:1025px) and (max-width:1199px){
+	
+}

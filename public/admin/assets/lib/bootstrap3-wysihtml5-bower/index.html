@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta charset="utf-8">
+
+<title>bootstrap-wysihtml5</title>
+
+
+<link rel="stylesheet" type="text/css" href="components/bootstrap/dist/css/bootstrap.min.css"></link>
+<link rel="stylesheet" type="text/css" href="components/bootstrap/dist/css/bootstrap-theme.min.css"></link>
+<link rel="stylesheet" type="text/css" href="dist/bootstrap3-wysihtml5.min.css"></link>
+
+<style type="text/css" media="screen">
+  .btn.jumbo {
+    font-size: 20px;
+    font-weight: normal;
+    padding: 14px 24px;
+    margin-right: 10px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+  }
+</style>
+
+</head>
+<body>
+<div class="container">
+  <div class="jumbotron" style="margin-top:40px">
+    <textarea class="textarea" placeholder="Enter text ..." style="width: 50%; height: 200px; font-size: 14px; line-height: 18px; border:2px solid #900; padding:10px;">
+    </textarea>
+  </div>
+</div>
+
+
+<script src="components/wysihtml5x/dist/wysihtml5x-toolbar.min.js"></script>
+<script src="components/jquery/dist/jquery.min.js"></script>
+<script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="components/handlebars/handlebars.runtime.min.js"></script>
+<script src="dist/bootstrap3-wysihtml5.min.js"></script>
+
+<script>
+  $('.textarea').wysihtml5();
+</script>
+
+</body>
+</html>

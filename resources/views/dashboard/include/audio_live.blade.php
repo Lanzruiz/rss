@@ -1,0 +1,183 @@
+<div id="audioMain" style="overflow-y: scroll;">
+  <div class="col-lg-12 bg-primary" style="margin-bottom: 15px;">
+      <div class="col-lg-10" style="padding-left: 15px;">
+          <h4>Push To Talk</h4>
+      </div>
+      <div class="col-lg-2" align="right">
+              <span id="audioClose" class="btn btn-danger btn-sm">X</span>
+      </div>
+  </div>
+    <div class="col-lg-12" id="displayLiveChannel"></div>
+
+    <div class="col-lg-12" id="loading">
+        <div class="alert alert-danger"><img src="{{url('public/assets/images/ajax-loader.gif')}}"> Waiting for Live channel... </div>
+    </div>
+</div>
+
+<script>
+
+$(document).on("click","#audioPopup",function(e){
+	console.log('ptt click');
+	$("#audioMain").fadeIn();
+	//$("#text-overlay").fadeIn();
+	$( "#audioMain" ).draggable();
+	$("#audioClose").click(function(){
+    //$(".pttAudioLive").trigger('pause');
+		$("#audioMain").fadeOut();
+	});
+	e.preventDefault();
+});
+
+
+
+var audioRef = firebase.database().ref('audio_live_recording/{{Session::get('users_id')}}');
+var audioContent = "";
+var userTalk = [];
+var userVoice = [];
+var initialAudioByChannel = [];
+var remainingAudioByChannel = [];
+var liveChannel = [];
+
+
+audioRef.on('value', function(snapshot){
+    var checkSnapshot = snapshot.exists();
+    if(checkSnapshot == false) {
+        $("#displayLiveChannel").hide();
+        $("#loading").show();
+        liveChannel = []
+    } else {
+       $("#displayLiveChannel").show();
+       $("#loading").hide();
+    }
+
+    var dctr = 0;
+
+      snapshot.forEach(function(childSnapshot) {
+        var snapDict = childSnapshot.val();
+
+            var ctr = 0;
+            childSnapshot.forEach(function(userSnapshot) {
+                var audioDict = userSnapshot.val();
+
+                var liveChannelCheck = jQuery.inArray(childSnapshot.key, liveChannel);
+
+                if (ctr == 0) {
+
+                    if(liveChannelCheck < 0) {
+                        console.log(childSnapshot.key)
+                        audioContent += "<div id='audioContent' class='audioChannel_"+childSnapshot.key+"'>";
+                          audioContent += "<div class='col-lg-8 text-danger' style='padding-top: 15px;'><strong>&nbsp;&nbsp;Channel:&nbsp;&nbsp;"+childSnapshot.key+"</strong></div><div class='col-lg-4' align='right' style='padding-top: 15px;'><audio class='pttAudioLive' src='#' id='"+childSnapshot.key+"' data-accesscode='"+userSnapshot.key+"' data-id='"+dctr+"' controls controlsList='nodownload' style='height: 20px !important;'></audio></div><hr>";
+                          audioContent += "<table border='0' class='col-lg-12' id='channelid_"+childSnapshot.key+"'>";
+                          liveChannel.push(childSnapshot.key);
+                    } else {
+                      audioContent = "";
+                    }
+                }
+
+                if (jQuery.inArray( userSnapshot.key, userTalk ) == -1) {
+                  //console.log("userSnapshot");
+                  //console.log(userSnapshot.key);
+                   userTalk.push(userSnapshot.key);
+
+                   audioContent += "<tr id='useraccess_"+userSnapshot.key+"' data-channel='"+childSnapshot.key+"'><td class='col-lg-6' style='padding: 5px 15px;'>"+audioDict["name"]+"</td><td class='col-lg-6'><div class='progress' style='height: 20px !important;'><div class='progress-bar progress-bar-warning' id='progress_"+userSnapshot.key+'_'+childSnapshot.key+"'  role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100' style='width:0%'></div></div></td></tr>";
+                   //console.log('liveChannelCheck : ' + liveChannelCheck);
+                   if(liveChannelCheck < 0) {
+
+                      $("#displayLiveChannel").append(audioContent);
+                   } else {
+                     //console.log('Channel ID : ' + childSnapshot.key);
+
+                     $("#channelid_"+childSnapshot.key).append(audioContent);
+                   }
+
+                      var userAudioRef = firebase.database().ref('audio_live_recording/{{Session::get('users_id')}}/'+childSnapshot.key+"/"+userSnapshot.key);
+                      userAudioRef.on('child_changed', function(changeSnapshot) {
+                           //console.log("changeSnapshot : " + userSnapshot.key);
+
+                           var changeDict = changeSnapshot.val();
+
+                           if(changeDict.length > 500) {
+                              //$("#"+childSnapshot.key).trigger('pause');
+                              //$("#"+childSnapshot.key).currentTime = 0;
+                              $(".pttAudioLive").data('accesscode',userSnapshot.key);
+                              $("#"+childSnapshot.key).attr('src',"data:audio/ogg;base64,"+changeDict);
+                              $("#"+childSnapshot.key).trigger('play');
+
+                            }
+                      });
+
+                      var removeAudioRef = firebase.database().ref('audio_live_recording/{{Session::get('users_id')}}/'+childSnapshot.key);
+                      removeAudioRef.on('child_removed', function(changeSnapshot) {
+                            //console.log("Remove Child: "+changeSnapshot.key);
+                            //console.log("Remove Child : " + userSnapshot.key);
+                            var channel = $("#useraccess_"+changeSnapshot.key).data('channel');
+                            //console.log("Channel : "+channel)
+                             $("#useraccess_"+changeSnapshot.key).remove();
+                             var userIndex = userTalk.indexOf(changeSnapshot.key);
+                             if (userIndex != -1) {
+                                userTalk.splice(userIndex, 1);
+                             }
+                            var rowCount = $('#channelid_'+channel+' >tbody >tr').length;
+                            //console.log('rowCount : ' + rowCount);
+                             if(rowCount == 0) {
+                                 $(".audioChannel_"+channel).remove();
+                                 //$("#"+changeSnapshot.key).trigger('pause');
+                                 //console.log("liveChannel : " + liveChannel);
+                                 var index = liveChannel.indexOf(channel);
+                                 //console.log("Index: "+ index);
+                                 if (index != -1) {
+                                      liveChannel.splice(index, 1);
+                                  }
+
+                                  //console.log("liveChannel : "+liveChannel);
+                             }
+                      });
+                 }
+
+
+                //     console.log("ACCESS Code: "+userSnapshot.key);
+                //     $(".pttAudioLive").data('accesscode',userSnapshot.key);
+                 //
+                 //
+                //  $("#"+childSnapshot.key).attr('src',"data:audio/ogg;base64,"+audioDict['data']);
+                //  $("#"+childSnapshot.key).trigger('play');
+                 ctr = ctr + 1;
+                 audioContent = "";
+            });
+      });
+
+
+      dctr = dctr + 1;
+      audioContent += "</table>";
+      audioContent += "</div>";
+
+      $('.pttAudioLive').on('play', function() {
+          var id = $(this).attr('id');
+          var access_code = $(this).data('accesscode');
+
+          var progress_val = 0;
+          var progressInterval = setInterval(function() {
+                var progressID = access_code +'_'+id;
+                //console.log(progressID);
+                progress_val = progress_val + 40;
+                $("#progress_"+progressID).attr('style','width:'+progress_val+'%');
+                if (progress_val >= 150) {
+                   progress_val = 0;
+                   clearInterval(progressInterval);
+                   $("#progress_"+progressID).attr('style','width:0%');
+                }
+          }, 200);
+
+
+      });
+
+
+
+});
+
+
+
+
+
+
+</script>

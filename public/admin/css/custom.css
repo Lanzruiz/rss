@@ -1,0 +1,22 @@
+.login-page, .register-page {
+    background: #444 !important;
+}
+
+.margin-left-10 {
+  margin-left: 10px;
+}
+
+.margin-right-10 {
+   margin-right: 10px;
+}
+
+.margin-bottom-10 {
+   margin-bottom: 10px;
+}
+
+@media screen and (min-width: 1900px) {
+  div#flashTransport {
+      margin-top: -199px;
+      /* z-index: 10000; */
+  }
+}

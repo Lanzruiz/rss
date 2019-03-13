@@ -1,0 +1,22 @@
+
+<?php $__env->startSection('content'); ?>
+
+<div class="row" style="margin-bottom: 40px;">
+    <div class="col-md-12" >
+        <?php echo $__env->make('dashboard.subscription.subscription', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+    </div>
+</div>
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('headercodes'); ?>
+  <link rel="stylesheet" type="text/css" media="screen" href="<?php echo e(url('public/assets/css/subscription.css')); ?>?<?=date('Ymdhis')?>">
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('extracodes'); ?>
+<script src="<?php echo e(url('public/assets/toggle/bootstrap-toggle.min.js')); ?>"></script>
+  
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.dashboard.dashboard', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

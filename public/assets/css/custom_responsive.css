@@ -1,0 +1,97 @@
+
+/* Large Devices, .visible-lg-* */
+@media (min-width: 1200px) {
+	#console_new_ifrm{
+		height: 440px;
+	}
+}
+
+/* Medium Devices, .visible-md-* */
+@media (max-width: 1199px) {
+	#console_new_ifrm{
+		height: 850px;
+	}
+}
+
+/* Small Devices, .visible-sm-* */
+@media (max-width: 991px) {
+	.header_wrap{	
+		background-position:center 0;
+	}
+	
+	.home_header_wrap{	
+		background-image: url('../images/headernewres.png');
+		/*background-repeat: no-repeat;
+		background-attachment: fixed;*/
+		background-size: 100%;
+	   /*	background-position:center -150px;*/
+		height: 50%;	
+		background-position:center 0;
+		padding:0;
+	}
+	.home_header_wrap .logo_sec{
+		margin:5px 0 0;
+	}
+	.home_header_wrap .menu_sec{
+		margin: 10px 0;
+	}
+	#console_new_ifrm{
+	}
+	hr{margin:10px 0 5px 0}
+}
+
+/* Small Devices, .visible-sm-* */
+@media (max-width: 767px) {
+
+	.logo_sec{
+		margin: 0;
+	}
+   .icon_menu_item img{
+		width: 60px;
+		margin: 0px auto;
+	}
+	.login_cont_in{
+		margin: 0 auto;
+	}
+	#monito_checkbox_form{margin: 10px 0;} 
+	.navbar-default .navbar-nav .open .dropdown-menu > li > a{color: #ddd;}
+	.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover{color: #fff;}
+}
+
+/* Extra Small Devices, .visible-xs-* */
+@media (max-width: 479px) {
+
+   .icon_menu_item img{
+		width: 50px;
+		margin: 0px auto;
+	}
+	
+	.login_form_nev_icon{
+		margin: 0;
+		margin-top: 10px;
+	}
+	.login_form_nev_icon img{
+		width: 80px;
+	}
+	.login_cont_in{
+		width: 100%;
+	}
+	.login_form_in input[type="text"], .login_form_in input[type="email"], .login_form_in input[type="password"]{
+		height: 30px;
+		font-size: 14px;
+	}
+.reg_button, .login_button{
+	  font-size: 18px;
+	  padding: 5px 15px 5px 15px;
+	}
+	.the_title h2{
+		font-size: 25px;
+	}
+	
+	ul.imageRow li{margin: 2px;}
+	li.opac, li.opac_hover{max-width: 140px;}
+	
+}
+
+
+
